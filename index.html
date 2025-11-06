@@ -1,105 +1,271 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ITP Souvenirs</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ITPSHOP - Instituto Tecnológico de Puebla</title>
   <style>
+    :root {
+      --amarillo: #f9a825;
+      --naranja: #ff6f00;
+      --fondo: #fff8e1;
+      --texto: #333;
+      --blanco: #fff;
+    }
+
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
-      padding: 0;
-      background: #f4f4f9;
+      font-family: "Poppins", Arial, sans-serif;
+      background-color: var(--fondo);
+      color: var(--texto);
     }
+
+    /* HEADER */
     header {
-      background: #004aad;
-      color: white;
-      padding: 1rem;
+      background: linear-gradient(90deg, var(--amarillo), var(--naranja));
+      color: var(--blanco);
       text-align: center;
+      padding: 1.5rem 1rem;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
     }
+
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+      letter-spacing: 1px;
+    }
+
+    header p {
+      margin: 0.3rem 0 0;
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+
+    /* SECCIONES */
+    .seccion {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .seccion h2 {
+      background: linear-gradient(90deg, var(--amarillo), var(--naranja));
+      color: white;
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      font-size: 1.5rem;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    /* PRODUCTOS */
     .productos {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 1.5rem;
-      padding: 2rem;
-      max-width: 1200px;
-      margin: auto;
+      margin-top: 1.5rem;
     }
+
     .producto {
-      background: white;
+      background: var(--blanco);
       border-radius: 10px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      text-align: center;
       padding: 1rem;
+      text-align: center;
       transition: transform 0.2s ease;
     }
+
     .producto:hover {
       transform: translateY(-5px);
     }
+
     .producto img {
       width: 100%;
       height: 180px;
       object-fit: cover;
       border-radius: 10px;
     }
+
     .producto h3 {
-      margin: 0.5rem 0;
+      color: var(--naranja);
+      margin: 0.5rem 0 0.2rem;
       font-size: 1.1rem;
+    }
+
+    .producto p {
+      font-size: 0.9rem;
+      margin: 0.3rem 0;
+    }
+
+    .precio {
+      color: #008000;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .boton {
+      background: var(--naranja);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-weight: bold;
+    }
+
+    .boton:hover {
+      background: var(--amarillo);
       color: #333;
     }
-    .producto p {
-      color: #007b00;
-      font-weight: bold;
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      background: linear-gradient(90deg, var(--amarillo), var(--naranja));
+      color: white;
+      padding: 1rem;
+      margin-top: 2rem;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>🛍  ITP Souvenirs</h1>
-    <p>Productos oficiales del Instituto Tecnológico de Puebla</p>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/8/8f/Logo_ITP.png" alt="Logo ITP" width="80">
+    <h1>ITPSHOP</h1>
+    <p>Logo Instituto Tecnológico de Puebla</p>
+    <h2>Bienvenido a ITPSHOP</h2>
+    <p>Descubre souvenirs exclusivos de la universidad. ¡Lleva un pedacito de orgullo contigo!</p>
   </header>
 
-  <section class="productos" id="productos">
-    <!-- Aquí se insertan los productos -->
+  <!-- 🧥 ROPA -->
+  <section class="seccion">
+    <h2>Ropa</h2>
+    <div class="productos">
+      <div class="producto">
+        <img src="https://raw.githubusercontent.com/SAMUELWEB11/ProyectoITPshop/main/img/playera_itp.jpg" alt="Camiseta Clásica ITP">
+        <h3>Camiseta Clásica ITP</h3>
+        <p>Camiseta 100% algodón con el logo del instituto en el pecho. Perfecta para clases o salidas casuales.</p>
+        <p class="precio">$250</p>
+        <button class="boton">Comprar</button>
+      </div>
+      <div class="producto">
+        <img src="https://raw.githubusercontent.com/SAMUELWEB11/ProyectoITPshop/main/img/sudadera_itp.jpg" alt="Sudadera con Capucha">
+        <h3>Sudadera con Capucha</h3>
+        <p>Sudadera cómoda con el texto 'Instituto Tecnológico de Puebla' en la espalda. Para noches frescas de estudio.</p>
+        <p class="precio">$450</p>
+        <button class="boton">Comprar</button>
+      </div>
+      <div class="producto">
+        <img src="https://raw.githubusercontent.com/SAMUELWEB11/ProyectoITPshop/main/img/gorra_itp.jpg" alt="Gorra Ajustable">
+        <h3>Gorra Ajustable</h3>
+        <p>Gorra con bordado del engranaje y 'ITP' en la frente. Protege tu cabeza del sol en eventos universitarios.</p>
+        <p class="precio">$150</p>
+        <button class="boton">Comprar</button>
+      </div>
+      <div class="producto">
+        <img src="https://raw.githubusercontent.com/SAMUELWEB11/ProyectoITPshop/main/img/mochila_itp.jpg" alt="Mochila Tecnológica">
+        <h3>Mochila Tecnológica</h3>
+        <p>Mochila espaciosa con bolsillo para laptop y bordados del engranaje. Ideal para llevar tus libros y gadgets.</p>
+        <p class="precio">$380</p>
+        <button class="boton">Comprar</button>
+      </div>
+    </div>
   </section>
 
-  <script>
-    // Puedes reemplazar estas rutas por las imágenes de tu GitHub
-    const productos = [
-      {
-        nombre: "Playera ITP",
-        precio: 250,
-        imagen: "https://raw.githubusercontent.com/SAMUELWEB11/ProyectoITPshop/main/img/playera_itp.jpg"
-      },
-      {
-        nombre: "Taza con Logo",
-        precio: 150,
-        imagen: "https://raw.githubusercontent.com/SAMUELWEB11/ProyectoITPshop/main/img/taza_itp.jpg"
-      },
-      {
-        nombre: "Sudadera Tecnológico",
-        precio: 450,
-        imagen: "https://raw.githubusercontent.com/SAMUELWEB11/ProyectoITPshop/main/img/sudadera_itp.jpg"
-      },
-      {
-        nombre: "Gorra Oficial",
-        precio: 180,
-        imagen: "https://raw.githubusercontent.com/SAMUELWEB11/ProyectoITPshop/main/img/gorra_itp.jpg"
-      }
-    ];
+  <!-- 🧷 ACCESORIOS -->
+  <section class="seccion">
+    <h2>Accesorios</h2>
+    <div class="productos">
+      <div class="producto">
+        <img src="https://raw.githubusercontent.com/SAMUELWEB11/ProyectoITPshop/main/img/taza_itp.jpg" alt="Taza Universitaria">
+        <h3>Taza Universitaria</h3>
+        <p>Taza cerámica de 350ml con impresión del mapa de Puebla y el engranaje tecnológico. Ideal para tu café matutino.</p>
+        <p class="precio">$120</p>
+        <button class="boton">Comprar</button>
+      </div>
+      <div class="producto">
+        <img src="https://raw.githubusercontent.com/SAMUELWEB11/ProyectoITPshop/main/img/pin_itp.jpg" alt="Pin de Graduación">
+        <h3>Pin de Graduación</h3>
+        <p>Pin esmaltado con el logo completo. Un recuerdo eterno para tu logro académico.</p>
+        <p class="precio">$30</p>
+        <button class="boton">Comprar</button>
+      </div>
+      <div class="producto">
+        <img src="https://raw.githubusercontent.com/SAMUELWEB11/ProyectoITPshop/main/img/stickers_itp.jpg" alt="Estickers Set">
+        <h3>Estickers Set</h3>
+        <p>Paquete de 5 stickers con elementos del logo: engranajes, mapa y letras. Para decorar tu laptop o cuaderno.</p>
+        <p class="precio">$60</p>
+        <button class="boton">Comprar</button>
+      </div>
+      <div class="producto">
+        <img src="https://raw.githubusercontent.com/SAMUELWEB11/ProyectoITPshop/main/img/funda_itp.jpg" alt="Funda para Teléfono">
+        <h3>Funda para Teléfono</h3>
+        <p>Correa de silicona con el logo 'ITP' para no perder tu móvil en el caos de clases. Práctica y cool.</p>
+        <p class="precio">$25</p>
+        <button class="boton">Comprar</button>
+      </div>
+    </div>
+  </section>
 
-    const contenedor = document.getElementById("productos");
+  <!-- 📚 ESCOLAR -->
+  <section class="seccion">
+    <h2>Escolar</h2>
+    <div class="productos">
+      <div class="producto">
+        <img src="https://raw.githubusercontent.com/SAMUELWEB11/ProyectoITPshop/main/img/cuaderno_itp.jpg" alt="Cuaderno de Notas">
+        <h3>Cuaderno de Notas</h3>
+        <p>Cuaderno espiral de 100 hojas con portada del instituto. Para apuntes de ingeniería que inspiren.</p>
+        <p class="precio">$80</p>
+        <button class="boton">Comprar</button>
+      </div>
+      <div class="producto">
+        <img src="https://raw.githubusercontent.com/SAMUELWEB11/ProyectoITPshop/main/img/boligrafo_itp.jpg" alt="Bolígrafo Grabado">
+        <h3>Bolígrafo Grabado</h3>
+        <p>Bolígrafo de metal con grabado 'Instituto Tecnológico de Puebla'. Escribe tus ideas con estilo profesional.</p>
+        <p class="precio">$40</p>
+        <button class="boton">Comprar</button>
+      </div>
+      <div class="producto">
+        <img src="https://raw.githubusercontent.com/SAMUELWEB11/ProyectoITPshop/main/img/usb_itp.jpg" alt="USB Creador">
+        <h3>USB Creador</h3>
+        <p>USB de 32GB con forma de engranaje y pre-cargado con recursos educativos del ITP. Para tus proyectos digitales.</p>
+        <p class="precio">$110</p>
+        <button class="boton">Comprar</button>
+      </div>
+      <div class="producto">
+        <img src="https://raw.githubusercontent.com/SAMUELWEB11/ProyectoITPshop/main/img/libreta_itp.jpg" alt="Libreta de Laboratorio">
+        <h3>Libreta de Laboratorio</h3>
+        <p>Libreta cuadriculada para experimentos, con portada del engranaje y reglas de seguridad del instituto.</p>
+        <p class="precio">$55</p>
+        <button class="boton">Comprar</button>
+      </div>
+    </div>
+  </section>
 
-    productos.forEach(p => {
-      const div = document.createElement("div");
-      div.classList.add("producto");
-      div.innerHTML = `
-        <img src="${p.imagen}" alt="${p.nombre}">
-        <h3>${p.nombre}</h3>
-        <p>$${p.precio}</p>
-      `;
-      contenedor.appendChild(div);
-    });
-  </script>
+  <!-- 🏡 HOGAR -->
+  <section class="seccion">
+    <h2>Hogar</h2>
+    <div class="productos">
+      <div class="producto">
+        <img src="https://raw.githubusercontent.com/SAMUELWEB11/ProyectoITPshop/main/img/poster_itp.jpg" alt="Poster Educativo">
+        <h3>Poster Educativo</h3>
+        <p>Poster laminado del campus con mapa y hitos históricos del instituto. Para decorar tu habitación de estudiante.</p>
+        <p class="precio">$70</p>
+        <button class="boton">Comprar</button>
+      </div>
+      <div class="producto">
+        <img src="https://raw.githubusercontent.com/SAMUELWEB11/ProyectoITPshop/main/img/calendario_itp.jpg" alt="Calendario Anual">
+        <h3>Calendario Anual</h3>
+        <p>Calendario de pared con fotos del instituto y fechas importantes académicas. Planifica tu semestre con estilo.</p>
+        <p class="precio">$95</p>
+        <button class="boton">Comprar</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    © 2025 ITPSHOP | Instituto Tecnológico de Puebla
+  </footer>
 </body>
 </html>
