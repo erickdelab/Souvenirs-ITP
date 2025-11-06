@@ -100,3 +100,31 @@ body {
     text-decoration: none;
     font-weight: 600;
 }
+
+/* ... (Todo tu código CSS anterior) ... */
+
+.registro-link {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+.registro-link a {
+    color: var(--color-principal);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* ===== ESTILOS AÑADIDOS ===== */
+.volver-link {
+    margin-top: 1.5rem; /* Un poco más de espacio */
+    font-size: 0.9rem;
+}
+.volver-link a {
+    color: #555; /* Un color más sutil */
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+.volver-link a:hover {
+    color: var(--color-principal); /* Cambia al color principal al pasar el ratón */
+}
+/* ===== FIN DE ESTILOS AÑADIDOS ===== */
