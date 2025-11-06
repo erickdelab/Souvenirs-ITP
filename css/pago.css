@@ -1,0 +1,115 @@
+/* Estilos para la página de pago */
+:root {
+    --color-principal: #c97d0b;
+    --dorado-principal: #ffd600;
+    --fondo: #f3f0f7;
+    --texto: #212121;
+}
+
+/* Usamos el body para centrar, igual que en login.css */
+body {
+    background: var(--fondo);
+    display: flex; /* Asegura que el flex-direction:column funcione */
+    min-height: 100vh; /* Asegura que ocupe toda la altura */
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1; /* Hace que el main ocupe el espacio disponible */
+    padding: 2rem 1rem;
+}
+
+.pago-box {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+}
+
+.pago-box h2 {
+    color: var(--color-principal);
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+}
+
+/* Estilos del formulario (reutilizados de login.css) */
+.input-grupo {
+    margin-bottom: 1.2rem;
+    text-align: left;
+}
+.input-grupo label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+.input-grupo input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box; 
+    font-family: "Montserrat", sans-serif;
+}
+
+/* Contenedor para Expiración y CVV */
+.fecha-cvv {
+    display: flex;
+    gap: 1rem;
+}
+.fecha-cvv .input-grupo {
+    flex: 1; /* Ocupan el espacio equitativamente */
+}
+
+/* Botón de Pagar */
+.btn-principal {
+    background: var(--dorado-principal);
+    color: var(--texto);
+    border: none;
+    padding: 0.8rem;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1rem;
+    font-weight: 700;
+    transition: background 0.3s ease;
+    font-family: "Montserrat", sans-serif;
+}
+.btn-principal:hover {
+    background: #ffab00; /* dorado-oscuro */
+}
+
+/* Estilos para el resumen del pedido */
+.resumen-pedido {
+    background: #f9f9f9;
+    border: 1px solid #eee;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+.resumen-pedido h3 {
+    margin-top: 0;
+    color: var(--texto);
+}
+.resumen-pedido p {
+    font-size: 1.1rem;
+    margin: 0;
+}
+#total-pagar {
+    color: #2e7d32; /* Un verde para el precio */
+    font-size: 1.3rem;
+}
+
+/* Mensaje de estado del pago */
+#msg-pago {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+}

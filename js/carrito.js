@@ -91,7 +91,31 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+    // ... (todo el código anterior de renderCarrito, vaciarCarrito, etc.) ...
+
+    // Asignar evento al botón de vaciar
+    document.getElementById('vaciar-btn').addEventListener('click', vaciarCarrito);
+
+    // --- MODIFICACIÓN AQUÍ ---
+    // Asignar evento al botón de continuar compra
+    if (btnContinuar) {
+        btnContinuar.addEventListener('click', () => {
+            // Aquí es donde validamos la sesión
+            const usuario = localStorage.getItem('usuarioActivo');
+            
+            if (usuario) {
+                // Si hay sesión, redirigimos a la página de pago
+                window.location.href = 'pago.html'; 
+            } else {
+                // Si NO hay sesión, pedimos que inicie sesión
+                alert("Debes iniciar sesión para continuar con tu compra.");
+                window.location.href = 'login.html';
+            }
+        });
+    }
+    // --- FIN DE LA MODIFICACIÓN ---
 
     // Renderizar todo al cargar
     renderCarrito();
 });
+
