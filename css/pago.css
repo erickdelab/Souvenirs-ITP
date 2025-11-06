@@ -113,3 +113,30 @@ main {
     font-size: 0.9rem;
     font-weight: 600;
 }
+
+/* ... (Todo tu CSS anterior) ... */
+
+/* Estilo para el grupo de Ciudad y CP (similar a fecha-cvv) */
+.ciudad-cp-grupo {
+    display: flex;
+    gap: 1rem;
+}
+.ciudad-cp-grupo .input-grupo {
+    flex: 1;
+}
+
+/* Estilo para el separador */
+.separador-pago {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 2rem 0 1.5rem 0;
+}
+
+/* Estilo para los subtítulos (h3) dentro del formulario */
+#payment-form h3 {
+    text-align: left;
+    font-size: 1.2rem;
+    color: var(--texto);
+    margin-top: 1rem;
+    margin-bottom: 1.2rem;
+}

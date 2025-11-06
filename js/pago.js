@@ -57,17 +57,27 @@ document.addEventListener('DOMContentLoaded', () => {
     paymentForm.addEventListener('submit', (e) => {
         e.preventDefault(); // Evita que la página se recargue
 
-        // Validamos (de forma simple) que los campos no estén vacíos
+        // --- VALIDACIÓN ACTUALIZADA ---
+        // Obtenemos todos los valores
         const nombre = document.getElementById('nombre-tarjeta').value;
         const numero = document.getElementById('numero-tarjeta').value;
         const exp = document.getElementById('exp-fecha').value;
         const cvv = document.getElementById('cvv').value;
+        
+        // Campos de dirección añadidos
+        const direccion = document.getElementById('direccion').value;
+        const colonia = document.getElementById('colonia').value;
+        const ciudad = document.getElementById('ciudad').value;
+        const cp = document.getElementById('cp').value;
 
-        if (!nombre || !numero || !exp || !cvv) {
+        // Validamos que NINGUNO esté vacío
+        if (!nombre || !numero || !exp || !cvv || !direccion || !colonia || !ciudad || !cp) {
             msgPago.style.color = "red";
-            msgPago.textContent = "Por favor, completa todos los campos.";
+            msgPago.textContent = "Por favor, completa todos los campos de envío y pago.";
             return;
         }
+        // --- FIN DE VALIDACIÓN ACTUALIZADA ---
+
 
         // --- Inicia la Simulación ---
         msgPago.style.color = "blue";
