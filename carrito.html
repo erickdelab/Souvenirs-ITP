@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito - ITPSHOP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo-container">
+                <img src="" alt="">
+                <h1>ITPSHOP</h1>
+            </a>
+            <div class="nav-derecha">
+                <span id="saludo-usuario" class="saludo"></span>
+                <a href="carrito.html" class="carrito-link" aria-label="Ver carrito de compras">
+                    <span class="carrito-icono">🛒</span>
+                    <span>Carrito</span>
+                    <span id="carrito-contador-nav" class="carrito-contador">0</span>
+                </a>
+                <button id="logout-btn" class="btn-logout">Cerrar Sesión</button>
+                
+                <a href="login.html" class="btn-login">Iniciar Sesión</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="seccion-carrito">
+            <h1>🛒 Tu Carrito</h1>
+            <table id="tablaCarrito">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Precio</th>
+                        <th>Cantidad</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    </tbody>
+            </table>
+            <div class="total" id="total"></div>
+            
+            <div class="acciones-carrito">
+                <button id="vaciar-btn" class="btn-vaciar">Vaciar carrito</button>
+                
+                <button id="continuar-compra-btn" class="btn-continuar">Continuar Compra</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        © 2025 ITPSHOP | Instituto Tecnológico de Puebla
+    </footer>
+
+    <script src="js/carrito.js"></script>
+</body>
+</html>

@@ -1,0 +1,347 @@
+/* ¡ESTA ES LA VERSIÓN CORRECTA! */
+:root {
+    --morado-oscuro: #c97d0b;
+    --morado-claro: #ff4d4d;
+    --dorado-principal: #ffd600; 
+    --dorado-oscuro: #ffab00; 
+    --fondo: #f3f0f7;         
+    --texto: #212121;         
+    --gris-claro: #e0e0e0;    
+    --blanco: #ffffff;
+    --sombra-suave: rgba(0, 0, 0, 0.08);
+    --sombra-media: rgba(0, 0, 0, 0.12);
+}
+*, *::before, *::after { box-sizing: border-box; }
+body {
+    margin: 0;
+    padding-top: 70px;
+    font-family: "Montserrat", Arial, sans-serif;
+    background-color: var(--fondo);
+    color: var(--texto);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+main {
+    flex-grow: 1; 
+}
+nav {
+    background: var(--morado-oscuro);
+    padding: 0.5rem 2rem;
+    box-shadow: 0 4px 12px var(--sombra-suave);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: var(--blanco);
+}
+.logo-container img { width: 45px; height: auto; }
+.logo-container h1 { font-size: 1.5rem; margin: 0; color: var(--blanco); }
+
+.nav-derecha {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+.saludo {
+    color: var(--blanco);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+.carrito-link {
+    display: flex;
+    align-items: center;
+    background: var(--dorado-principal);
+    color: var(--texto);
+    padding: 0.6rem 1rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.3s ease;
+    position: relative;
+}
+.carrito-link:hover { background: var(--dorado-oscuro); }
+.carrito-icono { font-size: 1.2rem; margin-right: 0.5rem; }
+.carrito-contador {
+    background: var(--morado-claro);
+    color: var(--blanco);
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+}
+.btn-logout {
+    background: transparent;
+    border: 2px solid var(--blanco);
+    color: var(--blanco);
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 600;
+    font-family: "Montserrat", sans-serif;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+.btn-logout:hover {
+    background: var(--blanco);
+    color: var(--morado-oscuro);
+}
+.btn-login {
+    background: var(--dorado-principal);
+    color: var(--texto);
+    padding: 0.6rem 1.2rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.3s ease;
+    font-size: 0.9rem;
+}
+.btn-login:hover {
+    background: var(--dorado-oscuro);
+}
+
+/* === LÓGICA DE VISIBILIDAD === */
+.logged-out .saludo,
+.logged-out .btn-logout {
+    display: none;
+}
+.logged-in .btn-login {
+    display: none;
+}
+
+/* --- ESTILOS INDEX.HTML --- */
+header {
+    background: linear-gradient(90deg, var(--morado-oscuro), var(--dorado-oscuro));
+    color: var(--blanco);
+    text-align: center;
+    padding: 2.5rem 1rem;
+}
+header h2 { margin: 0.5rem 0 0.3rem; font-size: 2.2rem; }
+header p { margin: 0; font-size: 1.1rem; opacity: 0.9; }
+.seccion { max-width: 1200px; margin: 2.5rem auto; padding: 0 1rem; }
+.seccion h2 {
+    background: var(--morado-oscuro);
+    color: var(--blanco);
+    padding: 0.8rem 1.5rem;
+    border-radius: 10px;
+    font-size: 1.8rem;
+    text-align: center;
+    box-shadow: 0 4px 10px var(--sombra-suave);
+    margin-bottom: 2rem;
+}
+.productos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 2rem;
+}
+
+.producto {
+    background: var(--blanco);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px var(--sombra-suave);
+    padding: 1rem; 
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 1. Seleccionamos el primer <div> (el que tiene la info) */
+.producto > div:first-child {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Esto hace que este <div> ocupe todo el espacio extra */
+}
+
+.producto:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 20px var(--sombra-media);
+}
+.producto img {
+    width: 100%;
+    height: 170px; 
+    object-fit: contain;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+.producto h3 {
+    color: var(--morado-oscuro);
+    margin: 0.5rem 0 0.3rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+.producto p {
+    font-size: 0.9rem;
+    margin: 0.3rem 0;
+    line-height: 1.5;
+    /* Eliminamos flex-grow de aquí */
+}
+.precio {
+    color: #2e7d32;
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin: 0.8rem 0;
+    
+    /* 2. Esto empuja el precio al fondo de su contenedor */
+    margin-top: auto; 
+}
+.controles-compra {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-top: 1rem; /* 3. Espacio fijo entre precio y botones */
+}
+.cantidad-control {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+.qty-btn {
+    background: var(--gris-claro);
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--texto);
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+.qty-btn:hover { background: var(--dorado-principal); color: var(--texto); }
+.cantidad-input {
+    width: 40px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    border: none;
+    background: transparent;
+    font-family: "Montserrat", sans-serif;
+    -moz-appearance: textfield;
+}
+.cantidad-input::-webkit-outer-spin-button,
+.cantidad-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.boton {
+    background: var(--dorado-principal);
+    color: var(--texto);
+    border: none;
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    font-weight: 600;
+    font-size: 0.9rem;
+    width: 100%;
+}
+.boton:hover { background: var(--dorado-oscuro); }
+
+/* --- ESTILOS CARRITO.HTML --- */
+.seccion-carrito {
+    max-width: 1000px;
+    margin: 2.5rem auto;
+    padding: 2rem;
+    background: var(--blanco);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px var(--sombra-suave);
+}
+.seccion-carrito h1 {
+    color: var(--morado-oscuro);
+    text-align: center;
+    margin-top: 0;
+}
+table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-top: 1.5rem; 
+}
+th, td { 
+    padding: 1rem; 
+    border-bottom: 1px solid #ddd; 
+    text-align: left; 
+}
+th {
+    background-color: #f9f9f9;
+    color: var(--texto);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+td:nth-child(2), td:nth-child(3), td:nth-child(4) {
+    text-align: right;
+}
+.total { 
+    text-align: right; 
+    margin-top: 1.5rem; 
+    font-size: 1.5rem; 
+    font-weight: 700; 
+    color: var(--morado-oscuro);
+}
+.acciones-carrito {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+}
+.btn-vaciar { 
+    background: #e53935; 
+    color: white; 
+    padding: 0.7rem 1.2rem; 
+    border: none; 
+    border-radius: 8px; 
+    cursor: pointer;
+    font-weight: 600;
+    font-family: "Montserrat", sans-serif;
+    transition: background 0.3s ease;
+}
+.btn-vaciar:hover {
+    background: #c62828;
+}
+
+.btn-continuar {
+    background: var(--dorado-principal);
+    color: var(--texto);
+    padding: 0.7rem 1.2rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-family: "Montserrat", sans-serif;
+    transition: background 0.3s ease;
+    font-size: 0.9rem;
+}
+.btn-continuar:hover {
+    background: var(--dorado-oscuro);
+}
+
+/* --- FOOTER --- */
+footer {
+    text-align: center;
+    background: var(--morado-oscuro);
+    color: var(--blanco);
+    padding: 1.5rem;
+    margin-top: 3rem;
+    font-weight: 600;
+}
