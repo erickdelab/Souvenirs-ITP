@@ -1,3 +1,4 @@
+// carrito.js - VERSIÓN CORREGIDA
 // --- Función para Cerrar Sesión ---
 function cerrarSesion() {
     if (confirm("¿Estás seguro de que quieres cerrar sesión?")) {
@@ -6,7 +7,7 @@ function cerrarSesion() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     
     // --- 1. LÓGICA DE UI (Mostrar/Ocultar botones) ---
     const usuarioActivo = localStorage.getItem('usuarioActivo');
@@ -28,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const contadorNavEl = document.getElementById('carrito-contador-nav');
     const btnContinuar = document.getElementById('continuar-compra-btn');
 
-    function renderCarrito() {
+    async function renderCarrito() {
         cuerpo.innerHTML = '';
         let totalGeneral = 0;
         let totalItems = 0;
@@ -71,6 +72,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (contadorNavEl) {
             contadorNavEl.textContent = totalItems;
         }
+        
+        // Actualizar localStorage
+        localStorage.setItem('carrito', JSON.stringify(carrito));
     }
 
     function agregarEventListenersCarrito() {
@@ -101,106 +105,142 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function actualizarCantidad(index, isIncrease) {
-        const productos = JSON.parse(localStorage.getItem('productos')) || [];
-        const productoOriginal = productos.find(p => p.id == carrito[index].id);
-        
-        if (productoOriginal) {
-            let nuevaCantidad = carrito[index].cantidad;
+    async function actualizarCantidad(index, isIncrease) {
+        try {
+            // Cargar inventario actual
+            const productos = await githubInventario.cargarInventario();
+            const productoOriginal = productos.find(p => p.id == carrito[index].id);
             
-            if (isIncrease) {
-                if (carrito[index].cantidad < productoOriginal.inventario) {
-                    nuevaCantidad++;
+            if (productoOriginal) {
+                let nuevaCantidad = carrito[index].cantidad;
+                
+                if (isIncrease) {
+                    if (carrito[index].cantidad < productoOriginal.inventario) {
+                        nuevaCantidad++;
+                    } else {
+                        alert(`No hay más inventario disponible. Máximo: ${productoOriginal.inventario}`);
+                        return;
+                    }
                 } else {
-                    alert(`No hay más inventario disponible. Máximo: ${productoOriginal.inventario}`);
-                    return;
+                    if (carrito[index].cantidad > 1) {
+                        nuevaCantidad--;
+                    } else {
+                        await eliminarDelCarrito(index);
+                        return;
+                    }
                 }
-            } else {
-                if (carrito[index].cantidad > 1) {
-                    nuevaCantidad--;
-                } else {
-                    eliminarDelCarrito(index);
-                    return;
-                }
+                
+                // Calcular diferencia para actualizar inventario
+                const diferencia = nuevaCantidad - carrito[index].cantidad;
+                carrito[index].cantidad = nuevaCantidad;
+                
+                // Actualizar inventario
+                productoOriginal.inventario -= diferencia;
+                const productoIndex = productos.findIndex(p => p.id == carrito[index].id);
+                productos[productoIndex] = productoOriginal;
+                
+                // Guardar cambios
+                localStorage.setItem('carrito', JSON.stringify(carrito));
+                await githubInventario.guardarCambiosLocalmente(productos);
+                
+                await renderCarrito();
             }
-            
-            // Actualizar carrito
-            const diferencia = nuevaCantidad - carrito[index].cantidad;
-            carrito[index].cantidad = nuevaCantidad;
-            
-            // Actualizar inventario
-            productoOriginal.inventario -= diferencia;
-            const productoIndex = productos.findIndex(p => p.id == carrito[index].id);
-            productos[productoIndex] = productoOriginal;
-            
-            localStorage.setItem('carrito', JSON.stringify(carrito));
-            localStorage.setItem('productos', JSON.stringify(productos));
-            renderCarrito();
+        } catch (error) {
+            console.error('Error actualizando cantidad:', error);
+            alert('Error al actualizar la cantidad');
         }
     }
 
-    function actualizarCantidadInput(index, nuevaCantidad) {
+    async function actualizarCantidadInput(index, nuevaCantidad) {
         if (nuevaCantidad < 1) {
-            eliminarDelCarrito(index);
+            await eliminarDelCarrito(index);
             return;
         }
 
-        const productos = JSON.parse(localStorage.getItem('productos')) || [];
-        const productoOriginal = productos.find(p => p.id == carrito[index].id);
-        
-        if (productoOriginal && nuevaCantidad <= productoOriginal.inventario + carrito[index].cantidad) {
-            const diferencia = nuevaCantidad - carrito[index].cantidad;
-            carrito[index].cantidad = nuevaCantidad;
+        try {
+            const productos = await githubInventario.cargarInventario();
+            const productoOriginal = productos.find(p => p.id == carrito[index].id);
             
-            // Actualizar inventario
-            productoOriginal.inventario -= diferencia;
-            const productoIndex = productos.findIndex(p => p.id == carrito[index].id);
-            productos[productoIndex] = productoOriginal;
-            
-            localStorage.setItem('carrito', JSON.stringify(carrito));
-            localStorage.setItem('productos', JSON.stringify(productos));
-            renderCarrito();
-        } else {
-            alert(`No hay suficiente inventario. Máximo disponible: ${productoOriginal.inventario + carrito[index].cantidad}`);
-            renderCarrito(); // Recargar para mostrar valores correctos
-        }
-    }
-
-    function eliminarDelCarrito(index) {
-        if (confirm("¿Estás seguro de que quieres eliminar este producto del carrito?")) {
-            const productos = JSON.parse(localStorage.getItem('productos')) || [];
-            
-            // Devolver el producto al inventario
-            const productoIndex = productos.findIndex(p => p.id == carrito[index].id);
-            if (productoIndex !== -1) {
-                productos[productoIndex].inventario += carrito[index].cantidad;
-                localStorage.setItem('productos', JSON.stringify(productos));
-            }
-            
-            // Eliminar del carrito
-            carrito.splice(index, 1);
-            localStorage.setItem('carrito', JSON.stringify(carrito));
-            
-            renderCarrito();
-            alert('Producto eliminado del carrito.');
-        }
-    }
-
-    function vaciarCarrito() {
-        if (confirm("¿Estás seguro de que quieres vaciar todo tu carrito?")) {
-            const productos = JSON.parse(localStorage.getItem('productos')) || [];
-            
-            // Devolver todos los productos al inventario
-            carrito.forEach(itemCarrito => {
-                const productoIndex = productos.findIndex(p => p.id == itemCarrito.id);
-                if (productoIndex !== -1) {
-                    productos[productoIndex].inventario += itemCarrito.cantidad;
+            if (productoOriginal) {
+                // Verificar inventario disponible (incluyendo lo que ya está en carrito)
+                const inventarioDisponible = productoOriginal.inventario + carrito[index].cantidad;
+                
+                if (nuevaCantidad <= inventarioDisponible) {
+                    const diferencia = nuevaCantidad - carrito[index].cantidad;
+                    carrito[index].cantidad = nuevaCantidad;
+                    
+                    // Actualizar inventario
+                    productoOriginal.inventario -= diferencia;
+                    const productoIndex = productos.findIndex(p => p.id == carrito[index].id);
+                    productos[productoIndex] = productoOriginal;
+                    
+                    // Guardar cambios
+                    localStorage.setItem('carrito', JSON.stringify(carrito));
+                    await githubInventario.guardarCambiosLocalmente(productos);
+                    
+                    await renderCarrito();
+                } else {
+                    alert(`No hay suficiente inventario. Máximo disponible: ${inventarioDisponible}`);
+                    await renderCarrito(); // Recargar para mostrar valores correctos
                 }
-            });
-            
-            localStorage.setItem('productos', JSON.stringify(productos));
-            localStorage.removeItem('carrito');
-            renderCarrito();
+            }
+        } catch (error) {
+            console.error('Error actualizando cantidad:', error);
+            alert('Error al actualizar la cantidad');
+        }
+    }
+
+    async function eliminarDelCarrito(index) {
+        if (confirm("¿Estás seguro de que quieres eliminar este producto del carrito?")) {
+            try {
+                const productos = await githubInventario.cargarInventario();
+                
+                // Devolver el producto al inventario
+                const productoIndex = productos.findIndex(p => p.id == carrito[index].id);
+                if (productoIndex !== -1) {
+                    productos[productoIndex].inventario += carrito[index].cantidad;
+                    await githubInventario.guardarCambiosLocalmente(productos);
+                }
+                
+                // Eliminar del carrito
+                carrito.splice(index, 1);
+                localStorage.setItem('carrito', JSON.stringify(carrito));
+                
+                await renderCarrito();
+                alert('Producto eliminado del carrito.');
+            } catch (error) {
+                console.error('Error eliminando del carrito:', error);
+                alert('Error al eliminar el producto del carrito');
+            }
+        }
+    }
+
+    async function vaciarCarrito() {
+        if (confirm("¿Estás seguro de que quieres vaciar todo tu carrito?")) {
+            try {
+                const productos = await githubInventario.cargarInventario();
+                
+                // Devolver todos los productos al inventario
+                for (const itemCarrito of carrito) {
+                    const productoIndex = productos.findIndex(p => p.id == itemCarrito.id);
+                    if (productoIndex !== -1) {
+                        productos[productoIndex].inventario += itemCarrito.cantidad;
+                    }
+                }
+                
+                // Guardar cambios en el inventario
+                await githubInventario.guardarCambiosLocalmente(productos);
+                
+                // Vaciar carrito
+                carrito = [];
+                localStorage.removeItem('carrito');
+                
+                await renderCarrito();
+                alert('Carrito vaciado exitosamente. Los productos han sido regresados al inventario.');
+            } catch (error) {
+                console.error('Error vaciando carrito:', error);
+                alert('Error al vaciar el carrito');
+            }
         }
     }
     
@@ -221,5 +261,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Renderizar inicial
-    renderCarrito();
+    await renderCarrito();
 });
