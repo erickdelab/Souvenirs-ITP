@@ -1,8 +1,11 @@
 // github-inventario.js - Sistema con GitHub
 class GitHubInventario {
     constructor() {
+
+
+        
         // REEMPLAZA con la URL RAW de tu archivo en GitHub
-        this.inventarioURL = 'https://raw.githubusercontent.com/SAMUELWEB11/ProyectoITPshop/main/inventario.json';
+        this.inventarioURL = 'https://raw.githubusercontent.com/erickdelab/Souvenirs-ITP/main/inventario.json';
         this.localKey = 'itpshop_inventario_local';
     }
 
