@@ -1,75 +1,96 @@
-// github-inventario.js - Sistema con GitHub (VERSIÓN MEJORADA)
+// github-inventario.js - SISTEMA HÍBRIDO MEJORADO
 class GitHubInventario {
     constructor() {
-        // URL corregida - usando proxy para evitar problemas CORS
         this.inventarioURL = 'https://raw.githubusercontent.com/erickdelab/Souvenirs-ITP/main/inventario.json';
         this.localKey = 'itpshop_inventario_local';
+        this.cambiosPendientesKey = 'itpshop_cambios_pendientes';
     }
 
-    // Cargar inventario desde GitHub
     async cargarInventario() {
         try {
-            console.log('🌐 Cargando inventario desde GitHub...', this.inventarioURL);
-            
-            // Agregar timestamp para evitar cache
-            const urlConTimestamp = `${this.inventarioURL}?t=${Date.now()}`;
-            const response = await fetch(urlConTimestamp);
-            
-            console.log('📡 Response status:', response.status, response.statusText);
+            console.log('🌐 Cargando inventario desde GitHub...');
+            const response = await fetch(`${this.inventarioURL}?t=${Date.now()}`);
             
             if (!response.ok) {
-                throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
+                throw new Error(`Error HTTP: ${response.status}`);
             }
             
             const data = await response.json();
-            console.log('✅ Inventario cargado desde GitHub:', data);
+            console.log('✅ Inventario cargado desde GitHub');
             
-            if (!data.productos) {
-                throw new Error('Estructura de datos incorrecta: falta propiedad "productos"');
-            }
+            // Aplicar cambios pendientes locales
+            const productosConCambios = await this.aplicarCambiosPendientes(data.productos);
             
             // Guardar localmente para cache
-            localStorage.setItem(this.localKey, JSON.stringify(data.productos));
+            localStorage.setItem(this.localKey, JSON.stringify(productosConCambios));
             
-            return data.productos;
+            return productosConCambios;
         } catch (error) {
-            console.error('⚠️ Error cargando desde GitHub:', error);
-            console.log('🔄 Usando cache local...');
+            console.log('⚠️ Error cargando desde GitHub, usando cache local:', error);
             return this.cargarDesdeLocal();
         }
     }
 
-    // Cargar desde localStorage (fallback)
     cargarDesdeLocal() {
         const localData = localStorage.getItem(this.localKey);
         if (localData) {
-            try {
-                console.log('📦 Cargando desde cache local');
-                const productos = JSON.parse(localData);
-                console.log('📦 Productos en cache:', productos);
-                return productos;
-            } catch (parseError) {
-                console.error('❌ Error parseando cache local:', parseError);
-            }
+            console.log('📦 Cargando desde cache local');
+            return JSON.parse(localData);
         }
         
         console.log('📋 Usando productos por defecto');
         return this.obtenerProductosPorDefecto();
     }
 
-    // Guardar cambios localmente (solo en este dispositivo)
-    guardarCambiosLocalmente(productos) {
+    // Guardar cambios localmente y marcar como pendientes
+    async guardarCambiosLocalmente(productos) {
         try {
+            // Guardar el estado actual
             localStorage.setItem(this.localKey, JSON.stringify(productos));
-            console.log('💾 Cambios guardados localmente:', productos);
+            console.log('💾 Cambios guardados localmente');
+            
+            // Guardar cambios pendientes para sincronización futura
+            this.guardarCambiosPendientes();
+            
+            return true;
         } catch (error) {
             console.error('❌ Error guardando cambios locales:', error);
+            return false;
         }
     }
 
-    // Productos por defecto si todo falla
+    // Guardar cambios pendientes para sincronización
+    guardarCambiosPendientes() {
+        const cambios = {
+            timestamp: new Date().toISOString(),
+            version: '1.0'
+        };
+        localStorage.setItem(this.cambiosPendientesKey, JSON.stringify(cambios));
+    }
+
+    // Aplicar cambios pendientes a los productos
+    async aplicarCambiosPendientes(productos) {
+        const cambiosPendientes = localStorage.getItem(this.cambiosPendientesKey);
+        if (!cambiosPendientes) return productos;
+
+        console.log('🔄 Aplicando cambios pendientes...');
+        // Aquí podrías aplicar lógica específica de sincronización
+        // Por ahora solo devolvemos los productos locales si existen
+        const productosLocales = this.cargarDesdeLocal();
+        return productosLocales.length > 0 ? productosLocales : productos;
+    }
+
+    // Exportar datos para backup
+    exportarDatos() {
+        const productos = this.cargarDesdeLocal();
+        return {
+            productos: productos,
+            exportado: new Date().toISOString(),
+            total: productos.length
+        };
+    }
+
     obtenerProductosPorDefecto() {
-        console.log('🚨 Usando productos por defecto - verifica la conexión');
         return [
             {
                 id: "1",
@@ -92,7 +113,6 @@ class GitHubInventario {
         ];
     }
 
-    // Método para verificar la conexión
     async verificarConexion() {
         try {
             const response = await fetch(this.inventarioURL);

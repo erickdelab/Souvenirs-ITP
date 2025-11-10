@@ -1,4 +1,4 @@
-// admin.js - VERSIÓN MEJORADA CON DEPURACIÓN
+// admin.js - CON MEJOR MANEJO DE CAMBIOS
 document.addEventListener('DOMContentLoaded', async () => {
     // Verificar si es admin
     const usuarioActivo = localStorage.getItem('usuarioActivo');
@@ -11,8 +11,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     console.log('🔧 Iniciando panel de administración...');
-    console.log('👤 Usuario:', usuarioActivo);
-    console.log('⚙️ Es admin:', esAdmin);
 
     // Cargar UI
     document.getElementById('saludo-usuario').textContent = `Hola, ${usuarioActivo}`;
@@ -25,10 +23,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const formProducto = document.getElementById('form-producto');
     const cuerpoTabla = document.getElementById('cuerpo-tabla');
 
-    // DEPURACIÓN: Verificar conexión con GitHub
-    console.log('🔍 Verificando conexión con GitHub...');
-    const conexionOk = await githubInventario.verificarConexion();
-    console.log('📡 Conexión con GitHub:', conexionOk ? '✅ OK' : '❌ FALLÓ');
+    // Variables globales
+    let productosActuales = [];
 
     // Cargar productos al iniciar
     await cargarProductos();
@@ -52,7 +48,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     function abrirModal(producto = null) {
         const modalTitulo = document.getElementById('modal-titulo');
-        const form = document.getElementById('form-producto');
         
         if (producto) {
             // Modo edición
@@ -67,7 +62,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
             // Modo agregar
             modalTitulo.textContent = 'Agregar Producto';
-            form.reset();
+            formProducto.reset();
             document.getElementById('producto-id').value = '';
         }
         
@@ -81,41 +76,45 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function cargarProductos() {
         try {
             console.log('🔄 Cargando productos...');
-            const productos = await githubInventario.cargarInventario();
-            console.log('📊 Productos obtenidos:', productos);
+            productosActuales = await githubInventario.cargarInventario();
+            console.log('📊 Productos cargados:', productosActuales);
             
-            cuerpoTabla.innerHTML = '';
-
-            if (!productos || productos.length === 0) {
-                cuerpoTabla.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 2rem; color: orange;">⚠️ No hay productos disponibles</td></tr>';
-                return;
-            }
-
-            productos.forEach(producto => {
-                const fila = document.createElement('tr');
-                fila.innerHTML = `
-                    <td>${producto.id}</td>
-                    <td><img src="${producto.imagen}" alt="${producto.nombre}" class="imagen-producto" onerror="this.src='https://via.placeholder.com/50?text=Imagen+no+disponible'"></td>
-                    <td>${producto.nombre}</td>
-                    <td>$${producto.precio}</td>
-                    <td>${producto.descripcion ? producto.descripcion.substring(0, 50) + '...' : 'Sin descripción'}</td>
-                    <td>${producto.inventario}</td>
-                    <td class="acciones-producto">
-                        <button class="btn-editar" data-id="${producto.id}">✏️ Editar</button>
-                        <button class="btn-eliminar" data-id="${producto.id}">🗑️ Eliminar</button>
-                    </td>
-                `;
-                cuerpoTabla.appendChild(fila);
-            });
-
-            // Agregar event listeners después de crear las filas
-            agregarEventListenersProductos();
-            console.log('✅ Tabla de productos actualizada');
+            renderizarTabla(productosActuales);
             
         } catch (error) {
             console.error('❌ Error cargando productos:', error);
             cuerpoTabla.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 2rem; color: red;">❌ Error al cargar productos</td></tr>';
         }
+    }
+
+    function renderizarTabla(productos) {
+        cuerpoTabla.innerHTML = '';
+
+        if (!productos || productos.length === 0) {
+            cuerpoTabla.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 2rem; color: orange;">⚠️ No hay productos disponibles</td></tr>';
+            return;
+        }
+
+        productos.forEach(producto => {
+            const fila = document.createElement('tr');
+            fila.innerHTML = `
+                <td>${producto.id}</td>
+                <td><img src="${producto.imagen}" alt="${producto.nombre}" class="imagen-producto" onerror="this.src='https://via.placeholder.com/50?text=Imagen+no+disponible'"></td>
+                <td>${producto.nombre}</td>
+                <td>$${producto.precio}</td>
+                <td>${producto.descripcion ? producto.descripcion.substring(0, 50) + '...' : 'Sin descripción'}</td>
+                <td>${producto.inventario}</td>
+                <td class="acciones-producto">
+                    <button class="btn-editar" data-id="${producto.id}">✏️ Editar</button>
+                    <button class="btn-eliminar" data-id="${producto.id}">🗑️ Eliminar</button>
+                </td>
+            `;
+            cuerpoTabla.appendChild(fila);
+        });
+
+        // Agregar event listeners después de crear las filas
+        agregarEventListenersProductos();
+        console.log('✅ Tabla de productos actualizada');
     }
 
     function agregarEventListenersProductos() {
@@ -161,8 +160,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         try {
-            // Obtener productos actuales
-            let productos = await githubInventario.cargarInventario();
+            let productos = [...productosActuales];
             
             if (document.getElementById('producto-id').value) {
                 // Editar producto existente
@@ -177,16 +175,23 @@ document.addEventListener('DOMContentLoaded', async () => {
                 console.log('➕ Producto agregado:', producto);
             }
 
-            // Guardar cambios localmente
-            githubInventario.guardarCambiosLocalmente(productos);
+            // Guardar cambios
+            const guardadoExitoso = await githubInventario.guardarCambiosLocalmente(productos);
             
-            await cargarProductos();
-            cerrarModal();
-            alert('Producto guardado exitosamente.');
+            if (guardadoExitoso) {
+                productosActuales = productos;
+                renderizarTabla(productosActuales);
+                cerrarModal();
+                
+                // Mostrar mensaje informativo
+                mostrarMensaje('✅ Producto guardado exitosamente (cambios guardados localmente)', 'success');
+            } else {
+                throw new Error('Error al guardar cambios');
+            }
             
         } catch (error) {
             console.error('Error guardando producto:', error);
-            alert('Error al guardar el producto. Intenta nuevamente.');
+            mostrarMensaje('❌ Error al guardar el producto', 'error');
         }
     }
 
@@ -196,38 +201,65 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function editarProducto(id) {
         try {
-            const productos = await githubInventario.cargarInventario();
-            const producto = productos.find(p => p.id === id);
+            const producto = productosActuales.find(p => p.id === id);
             if (producto) {
                 console.log('📝 Editando producto:', producto);
                 abrirModal(producto);
             } else {
-                alert('Producto no encontrado.');
+                mostrarMensaje('❌ Producto no encontrado', 'error');
             }
         } catch (error) {
             console.error('Error editando producto:', error);
-            alert('Error al cargar el producto para editar.');
+            mostrarMensaje('❌ Error al cargar el producto para editar', 'error');
         }
     }
 
     async function eliminarProducto(id) {
         if (confirm('¿Estás seguro de que quieres eliminar este producto?')) {
             try {
-                let productos = await githubInventario.cargarInventario();
+                let productos = [...productosActuales];
                 const productoEliminado = productos.find(p => p.id === id);
                 productos = productos.filter(p => p.id !== id);
                 
                 // Guardar cambios
-                githubInventario.guardarCambiosLocalmente(productos);
+                const guardadoExitoso = await githubInventario.guardarCambiosLocalmente(productos);
                 
-                await cargarProductos();
-                console.log('🗑️ Producto eliminado:', productoEliminado);
-                alert('Producto eliminado exitosamente.');
+                if (guardadoExitoso) {
+                    productosActuales = productos;
+                    renderizarTabla(productosActuales);
+                    console.log('🗑️ Producto eliminado:', productoEliminado);
+                    mostrarMensaje('✅ Producto eliminado exitosamente', 'success');
+                } else {
+                    throw new Error('Error al guardar cambios');
+                }
                 
             } catch (error) {
                 console.error('Error eliminando producto:', error);
-                alert('Error al eliminar el producto. Intenta nuevamente.');
+                mostrarMensaje('❌ Error al eliminar el producto', 'error');
             }
         }
+    }
+
+    function mostrarMensaje(mensaje, tipo) {
+        // Crear mensaje temporal
+        const mensajeEl = document.createElement('div');
+        mensajeEl.textContent = mensaje;
+        mensajeEl.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            z-index: 10000;
+            background: ${tipo === 'success' ? '#4CAF50' : '#f44336'};
+        `;
+        
+        document.body.appendChild(mensajeEl);
+        
+        setTimeout(() => {
+            document.body.removeChild(mensajeEl);
+        }, 3000);
     }
 });
