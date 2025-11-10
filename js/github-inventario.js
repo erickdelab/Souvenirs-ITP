@@ -1,10 +1,7 @@
-// github-inventario.js - Sistema con GitHub
+// github-inventario.js - Sistema con GitHub (VERSIÓN MEJORADA)
 class GitHubInventario {
     constructor() {
-
-
-        
-        // REEMPLAZA con la URL RAW de tu archivo en GitHub
+        // URL corregida - usando proxy para evitar problemas CORS
         this.inventarioURL = 'https://raw.githubusercontent.com/erickdelab/Souvenirs-ITP/main/inventario.json';
         this.localKey = 'itpshop_inventario_local';
     }
@@ -12,22 +9,32 @@ class GitHubInventario {
     // Cargar inventario desde GitHub
     async cargarInventario() {
         try {
-            console.log('🌐 Cargando inventario desde GitHub...');
-            const response = await fetch(this.inventarioURL);
+            console.log('🌐 Cargando inventario desde GitHub...', this.inventarioURL);
+            
+            // Agregar timestamp para evitar cache
+            const urlConTimestamp = `${this.inventarioURL}?t=${Date.now()}`;
+            const response = await fetch(urlConTimestamp);
+            
+            console.log('📡 Response status:', response.status, response.statusText);
             
             if (!response.ok) {
-                throw new Error('Error al cargar desde GitHub');
+                throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
             }
             
             const data = await response.json();
-            console.log('✅ Inventario cargado desde GitHub');
+            console.log('✅ Inventario cargado desde GitHub:', data);
+            
+            if (!data.productos) {
+                throw new Error('Estructura de datos incorrecta: falta propiedad "productos"');
+            }
             
             // Guardar localmente para cache
             localStorage.setItem(this.localKey, JSON.stringify(data.productos));
             
             return data.productos;
         } catch (error) {
-            console.log('⚠️ Error cargando desde GitHub, usando cache local:', error);
+            console.error('⚠️ Error cargando desde GitHub:', error);
+            console.log('🔄 Usando cache local...');
             return this.cargarDesdeLocal();
         }
     }
@@ -36,8 +43,14 @@ class GitHubInventario {
     cargarDesdeLocal() {
         const localData = localStorage.getItem(this.localKey);
         if (localData) {
-            console.log('📦 Cargando desde cache local');
-            return JSON.parse(localData);
+            try {
+                console.log('📦 Cargando desde cache local');
+                const productos = JSON.parse(localData);
+                console.log('📦 Productos en cache:', productos);
+                return productos;
+            } catch (parseError) {
+                console.error('❌ Error parseando cache local:', parseError);
+            }
         }
         
         console.log('📋 Usando productos por defecto');
@@ -46,13 +59,17 @@ class GitHubInventario {
 
     // Guardar cambios localmente (solo en este dispositivo)
     guardarCambiosLocalmente(productos) {
-        localStorage.setItem(this.localKey, JSON.stringify(productos));
-        console.log('💾 Cambios guardados localmente');
+        try {
+            localStorage.setItem(this.localKey, JSON.stringify(productos));
+            console.log('💾 Cambios guardados localmente:', productos);
+        } catch (error) {
+            console.error('❌ Error guardando cambios locales:', error);
+        }
     }
 
     // Productos por defecto si todo falla
     obtenerProductosPorDefecto() {
-        // Estos productos solo se usarán si GitHub falla y no hay cache
+        console.log('🚨 Usando productos por defecto - verifica la conexión');
         return [
             {
                 id: "1",
@@ -72,8 +89,17 @@ class GitHubInventario {
                 inventario: 8,
                 categoria: "ropa"
             }
-            // Puedes agregar más productos básicos aquí como respaldo
         ];
+    }
+
+    // Método para verificar la conexión
+    async verificarConexion() {
+        try {
+            const response = await fetch(this.inventarioURL);
+            return response.ok;
+        } catch (error) {
+            return false;
+        }
     }
 }
 
