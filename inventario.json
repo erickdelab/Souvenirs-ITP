@@ -2,7 +2,7 @@
   "productos": [
     {
       "id": "1",
-      "nombre": "Camiseta Clásica ITPxx",
+      "nombre": "Camiseta Clásica ITP",
       "precio": 250,
       "imagen": "https://github.com/SAMUELWEB11/ProyectoITPshop/blob/main/camiseta-itp.jpeg?raw=true",
       "descripcion": "Camiseta 100% algodón con el logo del instituto en el pecho. Perfecta para clases o salidas casuales.",
@@ -38,7 +38,7 @@
     },
     {
       "id": "5",
-      "nombre": "Taza Universitariaaaa",
+      "nombre": "Taza Universitaria",
       "precio": 120,
       "imagen": "https://github.com/SAMUELWEB11/ProyectoITPshop/blob/main/taza2.jpeg?raw=true",
       "descripcion": "Taza cerámica de 350ml con impresión del mapa de Puebla y el engranaje tecnológico. Ideal para tu café matutino.",

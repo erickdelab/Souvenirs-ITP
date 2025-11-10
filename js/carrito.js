@@ -1,4 +1,4 @@
-// carrito.js - VERSIÓN CORREGIDA
+// carrito.js - VERSIÓN COMPLETAMENTE CORREGIDA
 // --- Función para Cerrar Sesión ---
 function cerrarSesion() {
     if (confirm("¿Estás seguro de que quieres cerrar sesión?")) {
@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const totalDiv = document.getElementById('total');
     const contadorNavEl = document.getElementById('carrito-contador-nav');
     const btnContinuar = document.getElementById('continuar-compra-btn');
+    const btnVaciar = document.getElementById('vaciar-btn');
 
     async function renderCarrito() {
         cuerpo.innerHTML = '';
@@ -37,6 +38,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (carrito.length === 0) {
             cuerpo.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 2rem;">Tu carrito está vacío</td></tr>';
             if (btnContinuar) btnContinuar.style.display = 'none';
+            if (btnVaciar) btnVaciar.style.display = 'none';
         } else {
             carrito.forEach((p, index) => {
                 const subtotal = p.precio * p.cantidad;
@@ -63,6 +65,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </tr>`;
             });
             if (btnContinuar) btnContinuar.style.display = 'inline-block';
+            if (btnVaciar) btnVaciar.style.display = 'inline-block';
             
             // Agregar event listeners
             agregarEventListenersCarrito();
@@ -193,24 +196,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function eliminarDelCarrito(index) {
         if (confirm("¿Estás seguro de que quieres eliminar este producto del carrito?")) {
             try {
+                // Obtener el producto antes de eliminarlo
+                const productoAEliminar = carrito[index];
+                
+                // Cargar inventario actual
                 const productos = await githubInventario.cargarInventario();
                 
                 // Devolver el producto al inventario
-                const productoIndex = productos.findIndex(p => p.id == carrito[index].id);
+                const productoIndex = productos.findIndex(p => p.id == productoAEliminar.id);
                 if (productoIndex !== -1) {
-                    productos[productoIndex].inventario += carrito[index].cantidad;
+                    productos[productoIndex].inventario += productoAEliminar.cantidad;
+                    console.log(`🔄 Devolviendo ${productoAEliminar.cantidad} unidades de ${productoAEliminar.nombre} al inventario`);
+                    
+                    // Guardar cambios en el inventario
                     await githubInventario.guardarCambiosLocalmente(productos);
+                    console.log('✅ Inventario actualizado después de eliminar producto');
                 }
                 
                 // Eliminar del carrito
                 carrito.splice(index, 1);
                 localStorage.setItem('carrito', JSON.stringify(carrito));
+                console.log('🗑️ Producto eliminado del carrito');
                 
                 await renderCarrito();
-                alert('Producto eliminado del carrito.');
+                alert('✅ Producto eliminado del carrito. El inventario ha sido actualizado.');
+                
             } catch (error) {
-                console.error('Error eliminando del carrito:', error);
-                alert('Error al eliminar el producto del carrito');
+                console.error('❌ Error eliminando del carrito:', error);
+                alert('❌ Error al eliminar el producto del carrito: ' + error.message);
             }
         }
     }
@@ -218,41 +231,71 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function vaciarCarrito() {
         if (confirm("¿Estás seguro de que quieres vaciar todo tu carrito?")) {
             try {
+                // Verificar que hay productos en el carrito
+                if (carrito.length === 0) {
+                    alert('El carrito ya está vacío');
+                    return;
+                }
+
+                console.log('🔄 Iniciando vaciado del carrito...');
+                
+                // Cargar inventario actual
                 const productos = await githubInventario.cargarInventario();
+                console.log('📦 Productos en inventario:', productos);
+                console.log('🛒 Productos en carrito:', carrito);
                 
                 // Devolver todos los productos al inventario
+                let productosDevueltos = 0;
+                
                 for (const itemCarrito of carrito) {
                     const productoIndex = productos.findIndex(p => p.id == itemCarrito.id);
                     if (productoIndex !== -1) {
                         productos[productoIndex].inventario += itemCarrito.cantidad;
+                        productosDevueltos++;
+                        console.log(`🔄 Devolviendo ${itemCarrito.cantidad} unidades de ${itemCarrito.nombre} al inventario`);
+                    } else {
+                        console.warn(`⚠️ Producto ${itemCarrito.nombre} no encontrado en inventario`);
                     }
                 }
                 
+                console.log(`✅ ${productosDevueltos} productos devueltos al inventario`);
+                
                 // Guardar cambios en el inventario
-                await githubInventario.guardarCambiosLocalmente(productos);
+                if (productosDevueltos > 0) {
+                    await githubInventario.guardarCambiosLocalmente(productos);
+                    console.log('💾 Inventario actualizado en GitHub/local');
+                }
                 
                 // Vaciar carrito
                 carrito = [];
                 localStorage.removeItem('carrito');
+                console.log('🛒 Carrito vaciado');
                 
                 await renderCarrito();
-                alert('Carrito vaciado exitosamente. Los productos han sido regresados al inventario.');
+                alert(`✅ Carrito vaciado exitosamente. ${productosDevueltos} productos devueltos al inventario.`);
+                
             } catch (error) {
-                console.error('Error vaciando carrito:', error);
-                alert('Error al vaciar el carrito');
+                console.error('❌ Error vaciando carrito:', error);
+                alert('❌ Error al vaciar el carrito: ' + error.message);
             }
         }
     }
     
     // Asignar eventos
-    document.getElementById('vaciar-btn').addEventListener('click', vaciarCarrito);
+    if (btnVaciar) {
+        btnVaciar.addEventListener('click', vaciarCarrito);
+    }
 
     if (btnContinuar) {
         btnContinuar.addEventListener('click', () => {
             const usuario = localStorage.getItem('usuarioActivo');
             
             if (usuario) {
-                window.location.href = 'pago.html'; 
+                if (carrito.length > 0) {
+                    window.location.href = 'pago.html'; 
+                } else {
+                    alert("Tu carrito está vacío. Agrega productos antes de continuar.");
+                }
             } else {
                 alert("Debes iniciar sesión para continuar con tu compra.");
                 window.location.href = 'login.html';
@@ -261,5 +304,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Renderizar inicial
-    await renderCarrito();
+    try {
+        await renderCarrito();
+        console.log('✅ Carrito renderizado correctamente');
+    } catch (error) {
+        console.error('❌ Error renderizando carrito:', error);
+    }
 });
