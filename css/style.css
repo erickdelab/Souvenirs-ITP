@@ -367,3 +367,20 @@ footer {
 .logged-out .btn-admin {
     display: none !important;
 }
+
+/* Estilos para productos no disponibles */
+.no-disponible {
+    background: #ffebee;
+    color: #c62828;
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-align: center;
+    margin-top: 0.5rem;
+}
+
+.producto .boton:disabled {
+    cursor: not-allowed;
+    background: #ccc;
+}

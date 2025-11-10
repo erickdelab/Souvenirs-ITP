@@ -84,16 +84,25 @@ document.addEventListener('DOMContentLoaded', () => {
         msgPago.textContent = "Procesando pago... ⏳";
         pagarBtn.disabled = true; // Deshabilitamos el botón
 
-        setTimeout(() => {
-            // --- Simulación Exitosa ---
-            alert("¡Pago exitoso! Gracias por tu compra.");
-
-            // 1. Vaciamos el carrito
-            localStorage.removeItem('carrito');
-            
-            // 2. Redirigimos al inicio
-            window.location.href = "index.html";
-
-        }, 2500); // Simulamos 2.5 segundos de "procesamiento"
+        // En pago.js, dentro del setTimeout del pago exitoso:
+setTimeout(() => {
+    // 1. Actualizar inventario de productos comprados
+    const productos = JSON.parse(localStorage.getItem('productos')) || [];
+    const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+    
+    carrito.forEach(itemCarrito => {
+        const productoIndex = productos.findIndex(p => p.id == itemCarrito.id);
+        if (productoIndex !== -1) {
+            // El inventario ya se redujo cuando se agregó al carrito
+            // Aquí podríamos registrar la venta si fuera necesario
+        }
+    });
+    
+    // 2. Vaciamos el carrito
+    localStorage.removeItem('carrito');
+    
+    // 3. Redirigimos al inicio
+    window.location.href = "index.html";
+}, 2500);
     });
 });

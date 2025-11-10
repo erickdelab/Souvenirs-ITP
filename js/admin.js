@@ -22,7 +22,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const cuerpoTabla = document.getElementById('cuerpo-tabla');
 
     // Cargar productos al iniciar
-    cargarProductos();
+    function cargarProductos() {
+    const productos = JSON.parse(localStorage.getItem('productos')) || [];
+    // ... resto del código
+}
 
     // Event Listeners
     btnAgregar.addEventListener('click', () => abrirModal());
