@@ -1,4 +1,4 @@
-// github-inventario.js - SISTEMA HÍBRIDO MEJORADO
+// github-inventario.js - SISTEMA HÍBRIDO MEJORADO pruebla
 class GitHubInventario {
     constructor() {
         this.inventarioURL = 'https://raw.githubusercontent.com/erickdelab/Souvenirs-ITP/main/inventario.json';
