@@ -646,3 +646,117 @@ footer {
         font-size: 1.2rem;
     }
 }
+
+/* === BOTÓN SEGUIR COMPRANDO === */
+.btn-seguir-comprando {
+    background: #6c757d;
+    color: white;
+    padding: 0.7rem 1.2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-family: "Montserrat", sans-serif;
+    transition: background 0.3s ease;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-seguir-comprando:hover {
+    background: #5a6268;
+    color: white;
+    text-decoration: none;
+}
+
+/* === BOTÓN ELIMINAR ITEM INDIVIDUAL === */
+.btn-eliminar-item {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: background 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.btn-eliminar-item:hover {
+    background: #c82333;
+}
+
+/* === ACTUALIZACIÓN DE ACCIONES CARRITO === */
+.acciones-carrito {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.btn-vaciar, .btn-continuar, .btn-seguir-comprando { 
+    padding: 0.7rem 1.2rem; 
+    border: none; 
+    border-radius: 8px; 
+    cursor: pointer;
+    font-weight: 600;
+    font-family: "Montserrat", sans-serif;
+    transition: background 0.3s ease;
+    font-size: 0.9rem;
+    flex: 1;
+    min-width: 140px;
+    text-align: center;
+}
+
+.btn-vaciar { 
+    background: #e53935; 
+    color: white; 
+}
+
+.btn-vaciar:hover {
+    background: #c62828;
+}
+
+.btn-continuar {
+    background: var(--dorado-principal);
+    color: var(--texto);
+}
+
+.btn-continuar:hover {
+    background: var(--dorado-oscuro);
+}
+
+/* === RESPONSIVE PARA ACCIONES CARRITO === */
+@media (max-width: 768px) {
+    .acciones-carrito {
+        flex-direction: column;
+    }
+    
+    .btn-vaciar, .btn-continuar, .btn-seguir-comprando {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .btn-eliminar-item {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    #tablaCarrito th:nth-child(5),
+    #tablaCarrito td:nth-child(5) {
+        padding: 0.3rem;
+    }
+    
+    .btn-eliminar-item {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.6rem;
+    }
+}

@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- FIN LÓGICA DE UI ---
 
     // --- 2. Lógica para renderizar el carrito ---
-    // IMPORTANTE: Leemos el ARRAY de localStorage
     const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
     const cuerpo = document.querySelector('#tablaCarrito tbody');
     const totalDiv = document.getElementById('total');
@@ -38,13 +37,11 @@ document.addEventListener('DOMContentLoaded', () => {
         let totalGeneral = 0;
         let totalItems = 0;
 
-        // Usamos .length por ser un array
         if (carrito.length === 0) {
-            cuerpo.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 2rem;">Tu carrito está vacío</td></tr>';
-            if (btnContinuar) btnContinuar.style.display = 'none'; // Ocultar botón si no hay nada
+            cuerpo.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 2rem;">Tu carrito está vacío</td></tr>';
+            if (btnContinuar) btnContinuar.style.display = 'none';
         } else {
-            // Usamos .forEach() por ser un array
-            carrito.forEach(p => {
+            carrito.forEach((p, index) => {
                 const subtotal = p.precio * p.cantidad;
                 totalGeneral += subtotal;
                 totalItems += p.cantidad;
@@ -54,18 +51,58 @@ document.addEventListener('DOMContentLoaded', () => {
                         <td style="text-align:right;">$${p.precio.toFixed(2)}</td>
                         <td style="text-align:right;">${p.cantidad}</td>
                         <td style="text-align:right;">$${subtotal.toFixed(2)}</td>
+                        <td style="text-align:center;">
+                            <button class="btn-eliminar-item" data-index="${index}" title="Eliminar este producto">
+                                🗑️
+                            </button>
+                        </td>
                     </tr>`;
             });
-            if (btnContinuar) btnContinuar.style.display = 'block'; // Mostrar botón
+            if (btnContinuar) btnContinuar.style.display = 'block';
+            
+            // Agregar event listeners a los botones de eliminar
+            document.querySelectorAll('.btn-eliminar-item').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    eliminarDelCarrito(index);
+                });
+            });
         }
         
         totalDiv.textContent = `Total: $${totalGeneral.toFixed(2)}`;
-        contadorNavEl.textContent = totalItems; // Actualiza el contador de la barra
+        if (contadorNavEl) {
+            contadorNavEl.textContent = totalItems;
+        }
+    }
+
+    function eliminarDelCarrito(index) {
+        if (confirm("¿Estás seguro de que quieres eliminar este producto del carrito?")) {
+            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            const productos = JSON.parse(localStorage.getItem('productos')) || [];
+            
+            if (index >= 0 && index < carrito.length) {
+                const productoEliminado = carrito[index];
+                
+                // Devolver el producto al inventario
+                const productoIndex = productos.findIndex(p => p.id == productoEliminado.id);
+                if (productoIndex !== -1) {
+                    productos[productoIndex].inventario += productoEliminado.cantidad;
+                    localStorage.setItem('productos', JSON.stringify(productos));
+                }
+                
+                // Eliminar del carrito
+                carrito.splice(index, 1);
+                localStorage.setItem('carrito', JSON.stringify(carrito));
+                
+                // Recargar la vista del carrito
+                renderCarrito();
+                alert('Producto eliminado del carrito.');
+            }
+        }
     }
 
     function vaciarCarrito() {
         if (confirm("¿Estás seguro de que quieres vaciar tu carrito?")) {
-            // Obtener el carrito actual
             const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
             const productos = JSON.parse(localStorage.getItem('productos')) || [];
             
@@ -78,13 +115,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
                 
-                // Guardar los productos con inventario actualizado
                 localStorage.setItem('productos', JSON.stringify(productos));
             }
             
-            // Vaciar el carrito
             localStorage.removeItem('carrito');
-            location.reload(); // Recarga la página para mostrar el carrito vacío
+            location.reload();
         }
     }
     
@@ -94,14 +129,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Asignar evento al botón de continuar compra
     if (btnContinuar) {
         btnContinuar.addEventListener('click', () => {
-            // Aquí es donde validamos la sesión
             const usuario = localStorage.getItem('usuarioActivo');
             
             if (usuario) {
-                // Si hay sesión, redirigimos a la página de pago
                 window.location.href = 'pago.html'; 
             } else {
-                // Si NO hay sesión, pedimos que inicie sesión
                 alert("Debes iniciar sesión para continuar con tu compra.");
                 window.location.href = 'login.html';
             }
