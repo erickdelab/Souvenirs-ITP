@@ -85,23 +85,19 @@ document.addEventListener('DOMContentLoaded', () => {
         pagarBtn.disabled = true; // Deshabilitamos el botón
 
         // En pago.js, dentro del setTimeout del pago exitoso:
+// En pago.js, dentro del setTimeout del pago exitoso:
 setTimeout(() => {
-    // 1. Actualizar inventario de productos comprados
+    // 1. Obtener productos y carrito
     const productos = JSON.parse(localStorage.getItem('productos')) || [];
     const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
     
-    carrito.forEach(itemCarrito => {
-        const productoIndex = productos.findIndex(p => p.id == itemCarrito.id);
-        if (productoIndex !== -1) {
-            // El inventario ya se redujo cuando se agregó al carrito
-            // Aquí podríamos registrar la venta si fuera necesario
-        }
-    });
+    // 2. Registrar la venta (opcional para historial)
+    // Podríamos guardar un historial de ventas aquí si quisieras
     
-    // 2. Vaciamos el carrito
+    // 3. Vaciamos el carrito (el inventario ya se redujo cuando se agregó al carrito)
     localStorage.removeItem('carrito');
     
-    // 3. Redirigimos al inicio
+    // 4. Redirigimos al inicio
     window.location.href = "index.html";
 }, 2500);
     });

@@ -25,7 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // --- FIN LÓGICA DE UI ---
 
-
     // --- 2. Lógica para renderizar el carrito ---
     // IMPORTANTE: Leemos el ARRAY de localStorage
     const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
@@ -66,6 +65,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function vaciarCarrito() {
         if (confirm("¿Estás seguro de que quieres vaciar tu carrito?")) {
+            // Obtener el carrito actual
+            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            const productos = JSON.parse(localStorage.getItem('productos')) || [];
+            
+            if (carrito.length > 0) {
+                // Devolver todos los productos al inventario
+                carrito.forEach(itemCarrito => {
+                    const productoIndex = productos.findIndex(p => p.id == itemCarrito.id);
+                    if (productoIndex !== -1) {
+                        productos[productoIndex].inventario += itemCarrito.cantidad;
+                    }
+                });
+                
+                // Guardar los productos con inventario actualizado
+                localStorage.setItem('productos', JSON.stringify(productos));
+            }
+            
+            // Vaciar el carrito
             localStorage.removeItem('carrito');
             location.reload(); // Recarga la página para mostrar el carrito vacío
         }
@@ -74,29 +91,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Asignar evento al botón de vaciar
     document.getElementById('vaciar-btn').addEventListener('click', vaciarCarrito);
 
-    // Asignar evento al botón de continuar compra
-    if (btnContinuar) {
-        btnContinuar.addEventListener('click', () => {
-            // Aquí es donde validamos la sesión
-            const usuario = localStorage.getItem('usuarioActivo');
-            
-            if (usuario) {
-                // Si hay sesión, continuamos (simulado)
-                alert(`¡Gracias por tu compra, ${usuario}!\n\n(Simulación: Redirigiendo a pasarela de pago...)`);
-                // Aquí iría la lógica para enviar al pago
-            } else {
-                // Si NO hay sesión, pedimos que inicie sesión
-                alert("Debes iniciar sesión para continuar con tu compra.");
-                window.location.href = 'login.html';
-            }
-        });
-    }
-    // ... (todo el código anterior de renderCarrito, vaciarCarrito, etc.) ...
-
-    // Asignar evento al botón de vaciar
-    document.getElementById('vaciar-btn').addEventListener('click', vaciarCarrito);
-
-    // --- MODIFICACIÓN AQUÍ ---
     // Asignar evento al botón de continuar compra
     if (btnContinuar) {
         btnContinuar.addEventListener('click', () => {
@@ -113,9 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    // --- FIN DE LA MODIFICACIÓN ---
 
     // Renderizar todo al cargar
     renderCarrito();
 });
-
