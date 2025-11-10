@@ -384,3 +384,41 @@ footer {
     cursor: not-allowed;
     background: #ccc;
 }
+
+/* Estilos para productos no disponibles */
+.no-disponible {
+    background: #ffebee;
+    color: #c62828;
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-align: center;
+    margin-top: 0.5rem;
+}
+
+/* Estilos para poco stock */
+.poco-stock {
+    background: #fff3e0;
+    color: #ef6c00;
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-align: center;
+    margin-top: 0.5rem;
+}
+
+.producto .boton:disabled {
+    cursor: not-allowed;
+    background: #ccc;
+}
+
+.qty-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.cantidad-input:disabled {
+    opacity: 0.5;
+}
