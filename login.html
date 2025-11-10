@@ -22,16 +22,19 @@
 
         <div class="separador">o inicia sesión</div>
 
-        <div class="input-grupo">
-            <label for="usuario">Usuario</label>
-            <input type="text" id="usuario" placeholder="admin" required>
-        </div>
-        <div class="input-grupo">
-            <label for="password">Contraseña</label>
-            <input type="password" id="password" placeholder="admin" required>
-        </div>
+        <form id="login-form">
+            <div class="input-grupo">
+                <label for="usuario">Usuario</label>
+                <input type="text" id="usuario" placeholder="admin o User" required>
+            </div>
+            <div class="input-grupo">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" placeholder="••••••" required>
+            </div>
+            
+            <button type="submit" id="login-btn" class="btn-principal">Entrar</button>
+        </form>
         
-        <button id="login-btn" class="btn-principal">Entrar</button>
         <p id="msg"></p>
 
         <div class="registro-link">
@@ -41,7 +44,7 @@
         <div class="volver-link">
             <a href="index.html">← Volver a la tienda</a>
         </div>
-        </div>
+    </div>
 
     <script src="js/login.js"></script>
 </body>

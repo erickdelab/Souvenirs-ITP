@@ -1,4 +1,3 @@
-// En la función login(), modificar la validación:
 function login() {
     const usuario = document.getElementById('usuario').value;
     const password = document.getElementById('password').value;
@@ -14,10 +13,12 @@ function login() {
     // 2. Validar credenciales correctas (USUARIOS ACTUALIZADOS)
     const usuariosValidos = [
         { usuario: 'admin', password: 'admin' },
-        { usuario: 'user', password: 'user' }
+        { usuario: 'User', password: 'User' } // <-- Cambié 'user' por 'User' para consistencia
     ];
     
-    const usuarioValido = usuariosValidos.find(u => u.usuario === usuario && u.password === password);
+    const usuarioValido = usuariosValidos.find(u => 
+        u.usuario === usuario && u.password === password
+    );
     
     if (usuarioValido) {
         // Guardar sesión simulada
