@@ -22,10 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const cuerpoTabla = document.getElementById('cuerpo-tabla');
 
     // Cargar productos al iniciar
-    function cargarProductos() {
-    const productos = JSON.parse(localStorage.getItem('productos')) || [];
-    // ... resto del código
-}
+    cargarProductos(); // ✅ LLAMAR LA FUNCIÓN AL INICIO
 
     // Event Listeners
     btnAgregar.addEventListener('click', () => abrirModal());
@@ -91,8 +88,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${producto.descripcion.substring(0, 50)}...</td>
                 <td>${producto.inventario}</td>
                 <td class="acciones-producto">
-                    <button class="btn-editar" onclick="editarProducto(${producto.id})">✏️ Editar</button>
-                    <button class="btn-eliminar" onclick="eliminarProducto(${producto.id})">🗑️ Eliminar</button>
+                    <button class="btn-editar" onclick="editarProducto('${producto.id}')">✏️ Editar</button> <!-- ✅ CORREGIDO: comillas para string -->
+                    <button class="btn-eliminar" onclick="eliminarProducto('${producto.id}')">🗑️ Eliminar</button> <!-- ✅ CORREGIDO: comillas para string -->
                 </td>
             `;
             cuerpoTabla.appendChild(fila);
@@ -134,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Hacer funciones globales para los botones de acción
     window.editarProducto = function(id) {
         const productos = JSON.parse(localStorage.getItem('productos')) || [];
-        const producto = productos.find(p => p.id == id);
+        const producto = productos.find(p => p.id == id); // ✅ == en lugar de === para comparar string con número
         if (producto) {
             abrirModal(producto);
         }
@@ -143,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.eliminarProducto = function(id) {
         if (confirm('¿Estás seguro de que quieres eliminar este producto?')) {
             let productos = JSON.parse(localStorage.getItem('productos')) || [];
-            productos = productos.filter(p => p.id != id);
+            productos = productos.filter(p => p.id != id); // ✅ != en lugar de !== para comparar string con número
             localStorage.setItem('productos', JSON.stringify(productos));
             cargarProductos();
             alert('Producto eliminado exitosamente.');
