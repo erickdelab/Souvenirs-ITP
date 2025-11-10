@@ -2,10 +2,7 @@
 function cerrarSesion() {
     if (confirm("¿Estás seguro de que quieres cerrar sesión?")) {
         localStorage.removeItem('usuarioActivo');
-        // Opcional: Podrías limpiar el carrito aquí si lo deseas, 
-        // pero es mejor dejarlo por si el usuario vuelve.
-        // localStorage.removeItem('carrito'); 
-        
+        localStorage.removeItem('esAdmin');
         // Recargamos la página para que se actualice el estado de login
         location.reload(); 
     }
@@ -26,6 +23,15 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.remove('logged-out');
         document.getElementById('saludo-usuario').textContent = `Hola, ${usuarioActivo}`;
         document.getElementById('logout-btn').addEventListener('click', cerrarSesion);
+        
+        // MOSTRAR BOTÓN DE ADMIN SOLO SI ES ADMIN
+        const esAdmin = localStorage.getItem('esAdmin') === 'true';
+        if (esAdmin) {
+            const adminBtn = document.getElementById('admin-btn');
+            if (adminBtn) {
+                adminBtn.style.display = 'flex';
+            }
+        }
     } else {
         // Si NO hay sesión
         document.body.classList.add('logged-out');
@@ -54,6 +60,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function agregarAlCarrito(id, nombre, precio, cantidad) {
+        // Verificar inventario
+        const productos = JSON.parse(localStorage.getItem('productos')) || [];
+        const producto = productos.find(p => p.id == id);
+        
+        if (producto && producto.inventario < cantidad) {
+            alert(`No hay suficiente inventario. Solo quedan ${producto.inventario} unidades.`);
+            return;
+        }
+        
         // Buscamos en el ARRAY si el producto ya existe
         const productoExistente = carrito.find(p => p.id === id);
         

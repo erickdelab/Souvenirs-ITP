@@ -1,23 +1,4 @@
-// Espera a que el DOM esté listo
-document.addEventListener('DOMContentLoaded', () => {
-    
-    // Asigna el evento al botón
-    const loginButton = document.getElementById('login-btn');
-    if (loginButton) {
-        loginButton.addEventListener('click', login);
-    }
-
-    // Opcional: Permitir login con "Enter" en el campo de contraseña
-    const passwordInput = document.getElementById('password');
-    if (passwordInput) {
-        passwordInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                login();
-            }
-        });
-    }
-});
-
+// En la función login(), modificar la validación:
 function login() {
     const usuario = document.getElementById('usuario').value;
     const password = document.getElementById('password').value;
@@ -30,18 +11,20 @@ function login() {
         return;
     }
 
-    // 2. Validar credenciales correctas
-    if (usuario === 'admin' && password === 'admin') {
+    // 2. Validar credenciales correctas (USUARIOS ACTUALIZADOS)
+    const usuariosValidos = [
+        { usuario: 'admin', password: 'admin' },
+        { usuario: 'user', password: 'user' }
+    ];
+    
+    const usuarioValido = usuariosValidos.find(u => u.usuario === usuario && u.password === password);
+    
+    if (usuarioValido) {
         // Guardar sesión simulada
         localStorage.setItem('usuarioActivo', usuario);
+        localStorage.setItem('esAdmin', usuario === 'admin'); // Guardar si es admin
         msg.style.color = "green";
         msg.textContent = "✅ Sesión iniciada. Redirigiendo...";
-        
-        // ¡¡¡CORRECCIÓN IMPORTANTE!!!
-        // Eliminamos la línea que borraba el carrito.
-        // localStorage.removeItem('carrito');  <-- ESTA LÍNEA SE FUE
-
-        // Ahora, si un usuario anónimo tenía cosas, las conservará.
         
         setTimeout(() => location.href = 'index.html', 1000);
     } else {
