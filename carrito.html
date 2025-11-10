@@ -39,7 +39,7 @@
                         <th>Precio</th>
                         <th>Cantidad</th>
                         <th>Subtotal</th>
-                        <th>Acciones</th> <!-- COLUMNA NUEVA -->
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -49,12 +49,13 @@
             <div class="total" id="total"></div>
             
             <div class="acciones-carrito">
-                <!-- BOTÓN SEGUIR COMPRANDO -->
-                <a href="index.html" class="btn-seguir-comprando">← Seguir Comprando</a>
-                
-                <button id="vaciar-btn" class="btn-vaciar">Vaciar carrito</button>
-                
-                <button id="continuar-compra-btn" class="btn-continuar">Continuar Compra</button>
+                <div class="acciones-izquierda">
+                    <a href="index.html" class="btn-seguir-comprando">← Seguir Comprando</a>
+                </div>
+                <div class="acciones-derecha">
+                    <button id="vaciar-btn" class="btn-vaciar">Vaciar Todo</button>
+                    <button id="continuar-compra-btn" class="btn-continuar">Continuar Compra</button>
+                </div>
             </div>
         </section>
     </main>
