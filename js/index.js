@@ -8,7 +8,7 @@ function cerrarSesion() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     
     // --- 1. Cargar Carrito y Estado de Sesión ---
     const usuarioActivo = localStorage.getItem('usuarioActivo');
@@ -41,142 +41,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
 
     // --- 3. Cargar y mostrar productos ---
-    function cargarProductos() {
+    async function cargarProductos() {
         const productosContainer = document.querySelector('main');
-        let productos = JSON.parse(localStorage.getItem('productos'));
         
-        // Si no hay productos en localStorage, cargar los productos por defecto
-        if (!productos || productos.length === 0) {
-            productos = [
-                {
-                    id: "1",
-                    nombre: "Camiseta Clásica ITP",
-                    precio: 250,
-                    imagen: "https://github.com/SAMUELWEB11/ProyectoITPshop/blob/main/camiseta-itp.jpeg?raw=true",
-                    descripcion: "Camiseta 100% algodón con el logo del instituto en el pecho. Perfecta para clases o salidas casuales.",
-                    inventario: 10,
-                    categoria: "ropa"
-                },
-                {
-                    id: "2",
-                    nombre: "Sudadera con Capucha",
-                    precio: 450,
-                    imagen: "https://github.com/SAMUELWEB11/ProyectoITPshop/blob/main/sudadera-itp.jpeg?raw=true",
-                    descripcion: "Sudadera cómoda con el texto 'Instituto Tecnológico de Puebla' en la espalda. Para noches frescas de estudio.",
-                    inventario: 8,
-                    categoria: "ropa"
-                },
-                {
-                    id: "3",
-                    nombre: "Gorra Ajustable",
-                    precio: 150,
-                    imagen: "https://github.com/SAMUELWEB11/ProyectoITPshop/blob/main/gorra.jpeg?raw=true",
-                    descripcion: "Gorra con bordado del engranaje y 'ITP' en la frente. Protege tu cabeza del sol en eventos universitarios.",
-                    inventario: 15,
-                    categoria: "ropa"
-                },
-                {
-                    id: "4",
-                    nombre: "Mochila Tecnológica",
-                    precio: 380,
-                    imagen: "https://github.com/SAMUELWEB11/ProyectoITPshop/blob/main/mochila.jpeg?raw=true",
-                    descripcion: "Mochila espaciosa con bolsillo para laptop y bordados del engranaje. Ideal para llevar tus libros y gadgets.",
-                    inventario: 5,
-                    categoria: "ropa"
-                },
-                {
-                    id: "5",
-                    nombre: "Taza Universitaria",
-                    precio: 120,
-                    imagen: "https://github.com/SAMUELWEB11/ProyectoITPshop/blob/main/taza2.jpeg?raw=true",
-                    descripcion: "Taza cerámica de 350ml con impresión del mapa de Puebla y el engranaje tecnológico. Ideal para tu café matutino.",
-                    inventario: 20,
-                    categoria: "accesorios"
-                },
-                {
-                    id: "6",
-                    nombre: "Pin de Graduación",
-                    precio: 30,
-                    imagen: "https://github.com/SAMUELWEB11/ProyectoITPshop/blob/main/pines.jpeg?raw=true",
-                    descripcion: "Pin esmaltado con el logo completo. Un recuerdo eterno para tu logro académico.",
-                    inventario: 50,
-                    categoria: "accesorios"
-                },
-                {
-                    id: "7",
-                    nombre: "stickers Set",
-                    precio: 60,
-                    imagen: "https://github.com/SAMUELWEB11/ProyectoITPshop/blob/main/stickers.jpeg?raw=true",
-                    descripcion: "Paquete de 5 stickers con elementos del logo: engranajes, mapa y letras. Para decorar tu laptop o cuaderno.",
-                    inventario: 30,
-                    categoria: "accesorios"
-                },
-                {
-                    id: "8",
-                    nombre: "Funda para Teléfono",
-                    precio: 25,
-                    imagen: "https://github.com/SAMUELWEB11/ProyectoITPshop/blob/main/telefonofun.jpeg?raw=true",
-                    descripcion: "Correa de silicona con el logo 'ITP' para no perder tu móvil en el caos de clases. Práctica y cool.",
-                    inventario: 25,
-                    categoria: "accesorios"
-                },
-                {
-                    id: "9",
-                    nombre: "Cuaderno de Notas",
-                    precio: 80,
-                    imagen: "https://github.com/SAMUELWEB11/ProyectoITPshop/blob/main/cuaderno.jpeg?raw=true",
-                    descripcion: "Cuaderno espiral de 100 hojas con portada del instituto. Para apuntes de ingeniería que inspiren.",
-                    inventario: 40,
-                    categoria: "escolar"
-                },
-                {
-                    id: "10",
-                    nombre: "Bolígrafo Grabado",
-                    precio: 40,
-                    imagen: "https://github.com/SAMUELWEB11/ProyectoITPshop/blob/main/boligrafo.jpeg?raw=true",
-                    descripcion: "Bolígrafo de metal con grabado 'Instituto Tecnológico de Puebla'. Escribe tus ideas con estilo profesional.",
-                    inventario: 100,
-                    categoria: "escolar"
-                },
-                {
-                    id: "11",
-                    nombre: "USB Creador",
-                    precio: 110,
-                    imagen: "https://github.com/SAMUELWEB11/ProyectoITPshop/blob/main/USB.png?raw=true",
-                    descripcion: "USB de 32GB con forma de engranaje y pre-cargado con recursos educativos del ITP. Para tus proyectos digitales.",
-                    inventario: 15,
-                    categoria: "escolar"
-                },
-                {
-                    id: "12",
-                    nombre: "Libreta de Laboratorio",
-                    precio: 55,
-                    imagen: "https://github.com/SAMUELWEB11/ProyectoITPshop/blob/main/Libretalab.png?raw=true",
-                    descripcion: "Libreta cuadriculada para experimentos, con portada del engranaje y reglas de seguridad del instituto.",
-                    inventario: 35,
-                    categoria: "escolar"
-                },
-                {
-                    id: "13",
-                    nombre: "Poster Educativo",
-                    precio: 70,
-                    imagen: "https://github.com/SAMUELWEB11/ProyectoITPshop/blob/main/Poster.png?raw=true",
-                    descripcion: "Poster laminado del campus con mapa y hitos históricos del instituto. Para decorar tu habitación de estudiante.",
-                    inventario: 20,
-                    categoria: "hogar"
-                },
-                {
-                    id: "14",
-                    nombre: "Calendario Anual",
-                    precio: 95,
-                    imagen: "https://github.com/SAMUELWEB11/ProyectoITPshop/blob/main/Calendario.png?raw=true",
-                    descripcion: "Calendario de pared con fotos del instituto y fechas importantes académicas. Planifica tu semestre con estilo.",
-                    inventario: 12,
-                    categoria: "hogar"
-                }
-            ];
-            localStorage.setItem('productos', JSON.stringify(productos));
-        }
+        // Cargar desde GitHub
+        let productos = await githubInventario.cargarInventario();
         
         // Limpiar productos existentes manteniendo las secciones
         const secciones = productosContainer.querySelectorAll('.seccion');
@@ -288,13 +157,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
             if (btnAnadir) {
-                btnAnadir.addEventListener('click', () => {
+                btnAnadir.addEventListener('click', async () => {
                     const id = producto.dataset.id;
                     const nombre = producto.dataset.nombre;
                     const precio = parseFloat(producto.dataset.precio);
                     const cantidad = qtyInput ? parseInt(qtyInput.value) : 1; 
                     
-                    agregarAlCarrito(id, nombre, precio, cantidad);
+                    await agregarAlCarrito(id, nombre, precio, cantidad);
                     
                     if (qtyInput) {
                         qtyInput.value = 1; // Reseteamos el input
@@ -321,9 +190,9 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('carrito', JSON.stringify(carrito));
     }
 
-    function agregarAlCarrito(id, nombre, precio, cantidad) {
+    async function agregarAlCarrito(id, nombre, precio, cantidad) {
         // Verificar inventario
-        const productos = JSON.parse(localStorage.getItem('productos')) || [];
+        const productos = await githubInventario.cargarInventario();
         const productoIndex = productos.findIndex(p => p.id == id);
         
         if (productoIndex !== -1) {
@@ -337,7 +206,9 @@ document.addEventListener('DOMContentLoaded', () => {
             // Actualizar inventario
             producto.inventario -= cantidad;
             productos[productoIndex] = producto;
-            localStorage.setItem('productos', JSON.stringify(productos));
+            
+            // Guardar cambios localmente
+            githubInventario.guardarCambiosLocalmente(productos);
             
             // Buscamos en el ARRAY si el producto ya existe
             const productoExistente = carrito.find(p => p.id === id);
@@ -356,11 +227,11 @@ document.addEventListener('DOMContentLoaded', () => {
             alert(`${cantidad} ${nombre}(s) añadido(s) al carrito 🛍️`);
             
             // Recargar productos para actualizar disponibilidad
-            cargarProductos();
+            await cargarProductos();
         }
     }
 
     // Inicializar
-    cargarProductos();
+    await cargarProductos();
     actualizarContadorCarrito();
 });
